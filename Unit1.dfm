@@ -1,9 +1,9 @@
-object Form1: TForm1
-  Left = 498
-  Top = 133
-  Width = 869
-  Height = 675
-  Caption = 'Form1'
+object Loteria: TLoteria
+  Left = 365
+  Top = 158
+  Width = 979
+  Height = 563
+  Caption = 'Loteria'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,23 +11,44 @@ object Form1: TForm1
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Button1: TButton
-    Left = 8
+  object btBaixar: TButton
+    Left = 880
     Top = 8
     Width = 75
     Height = 25
-    Caption = 'Button1'
+    Caption = 'Baixar'
     TabOrder = 0
-    OnClick = Button1Click
+    OnClick = btBaixarClick
   end
-  object Memo1: TMemo
+  object btDescompactar: TButton
+    Left = 792
+    Top = 8
+    Width = 75
+    Height = 25
+    Caption = 'Descompactar'
+    TabOrder = 1
+    OnClick = btDescompactarClick
+  end
+  object brGerar: TButton
+    Left = 704
+    Top = 8
+    Width = 75
+    Height = 25
+    Caption = 'Gerar html'
+    TabOrder = 2
+    OnClick = brGerarClick
+  end
+  object mmLog: TRichEdit
     Left = 8
     Top = 40
-    Width = 833
-    Height = 585
+    Width = 945
+    Height = 473
+    HideScrollBars = False
+    PlainText = True
     ScrollBars = ssBoth
-    TabOrder = 1
+    TabOrder = 3
   end
 end
