@@ -26,10 +26,19 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
-
+  arq: TextFile;
+  linha: String;
 begin
-  winexec(PChar('C:\Program Files\WinRAR\WinRAR.exe e *.zip *htm'),sw_normal);
-  read
+  //http://www.edudelphipage.com.br/dicas_titulos.php?categoria=2
+  //winexec(PChar('C:\Program Files\WinRAR\WinRAR.exe e *.zip *htm'),sw_normal);
+  AssignFile(arq, 'E:\Softwares\loteria\megasena\d_megasc.htm');
+  Reset(arq);
+  Readln(arq, linha);
+  Memo1.Lines.Add(linha);
+  Memo1.Lines.Add('02 linha');
+  Readln(arq, linha);
+  Memo1.Lines.Add(linha);
+  CloseFile(arq);
 end;
 
 end.
