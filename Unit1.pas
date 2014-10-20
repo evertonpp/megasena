@@ -4,41 +4,44 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls,
-  ExtActns, zlibex, ComCtrls;
+  ExtActns, ComCtrls;
 
 type
   TLoteria = class(TForm)
     btBaixar: TButton;
     btDescompactar: TButton;
-    brGerar: TButton;
+    btGerar: TButton;
     mmLog: TRichEdit;
+    cbLocal: TCheckBox;
+    mmx: TRichEdit;
     procedure btBaixarClick(Sender: TObject);
     procedure btDescompactarClick(Sender: TObject);
-    procedure brGerarClick(Sender: TObject);
+    procedure btGerarClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure cbLocalClick(Sender: TObject);
   private
-    procedure log(pLinha: string; pCor: string = '');
+    procedure Log(pLinha: string; pCor: string = '');
+    procedure GerarTop;
   public
     { Public declarations }
   end;
 
 var
   Loteria: TLoteria;
-  ln: Integer;
+  strLocal: string;
 
 implementation
 
 {$R *.dfm}
 
 //==================================================================================================
-procedure TLoteria.log(pLinha: string; pCor: string = '');
+procedure TLoteria.Log(pLinha: string; pCor: string = '');
 begin
-  ln := ln + 1;
   if pCor = '' then
     mmLog.SelAttributes.Color := clGray
   else
     mmLog.SelAttributes.Color := TColor(pCor);
-  mmLog.Lines.Add(IntToStr(ln) + ' ' + pLinha);
+  mmLog.Lines.Add(IntToStr(mmLog.Lines.Count) + ' ' + pLinha);
 end;
 
 //==================================================================================================
@@ -47,7 +50,7 @@ begin
   with TDownloadURL.Create(self) do
     try
       log('Tentando fazer download de D_mgsasc.zip');
-      //FileName  := 'C:\Users\evertonpp\Documents\Loteria\Delphi\D_mgsasc.zip';
+      //FileName  := 'E:\Softwares\loteria\megasena\D_mgsasc.zip';
       FileName  := 'C:\Users\evertonpp\Documents\GitHub\D_mgsasc.zip';
       URL := 'http://www1.caixa.gov.br/loterias/_arquivos/loterias/D_mgsasc.zip';
       ExecuteTarget(nil) ;
@@ -67,34 +70,89 @@ end;
 //==================================================================================================
 procedure TLoteria.FormShow(Sender: TObject);
 begin
-  ln := 0;
+  strLocal := 'E:\Softwares\loteria\megasena\';
 end;
 
 //==================================================================================================
-procedure TLoteria.brGerarClick(Sender: TObject);
+procedure TLoteria.cbLocalClick(Sender: TObject);
+begin
+  if cbLocal.Checked then
+    strLocal := 'E:\Softwares\loteria\megasena\'
+  else
+    strLocal := 'C:\Users\evertonpp\Documents\GitHub\megasena\';
+end;
+
+//==================================================================================================
+procedure TLoteria.GerarTop;
 var
   arqIn, arqOut: TextFile;
   linha: String;
-  cont: integer;
 begin
-  cont := 0;
-  //AssignFile(arq, 'E:\Softwares\loteria\megasena\d_megasc.htm');
-  AssignFile(arqIn, 'C:\Users\evertonpp\Documents\GitHub\megasena\d_megasc.htm');
+  AssignFile(arqIn, strLocal + 'topres.htm');
+  AssignFile(arqOut, strLocal + 'res.htm');
   Reset(arqIn);
-  Readln(arqIn, linha);
+  Rewrite(arqOut);
+  while (not eof(arqIn)) do
+  begin
+    Readln(arqIn, linha);
+    Writeln(arqOut, linha);
+    Log(linha);
+  end;
+  CloseFile(arqIn);
+  CloseFile(arqOut);
+  Log('restop.htm adicionado', 'clGreen');
+end;
+
+//==================================================================================================
+procedure TLoteria.btGerarClick(Sender: TObject);
+var
+  arqIn, arqOut: TextFile;
+  linha: String;
+  cont, tupla: integer;
+  arqLst: TStringList;
+begin
+  //http://www.edudelphipage.com.br/dicas_titulos.php?categoria=2
+  cont := 0;
+  tupla := 0;
+  GerarTop;
+  AssignFile(arqIn, strLocal + 'd_megasc.htm');
+  AssignFile(arqOut, strLocal + 'res.htm');
+  arqLst := TStringList.Create;
+  arqLst.LoadFromFile(strLocal + 'lst.htm');
+
+  Reset(arqIn);
+  Append(arqOut);
+  Readln(arqIn, linha); // pula
   while (not eof(arqIn)) do
   begin
     cont := cont + 1;
     Readln(arqIn, linha);
     if trim(linha) <> '' then
-      log(IntToStr(cont) + ' ' + linha);
+    begin
+      //mmx.Lines.Add(linha);
+      arqLst.Add(trim(linha));
+      if (linha = '</tr>') then
+      begin
+        tupla := tupla + 1;
+        Log('fim da tupla ' + IntToStr(tupla), 'clBlue');
+        //mmx.Lines.Move(mmx.Lines.Count, 0);
+        arqLst.Move(arqlst.Count - 1, 0);
+      end;
 
+
+      Writeln(arqOut, trim(linha));
+      Log(linha);
+    end;
+    if cont = 100 then break;
   end;
-
+  Log('res.htm povoado', 'clGreen');
   CloseFile(arqIn);
-  mmLog.Lines.SaveToFile('C:\Users\evertonpp\Documents\GitHub\megasena\log.txt');
+  CloseFile(arqOut);
+  arqLst.SaveToFile(strLocal + 'lst.htm');
+  mmx.Lines.LoadFromFile(strLocal + 'lst.htm');
+  //mmLog.Lines.SaveToFile(strLocal + 'log.txt');
+  //Log('log.txt gerado', 'clBlue');  
 end;
-
 
 
 end.
