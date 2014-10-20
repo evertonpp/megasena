@@ -1,7 +1,7 @@
 object Loteria: TLoteria
-  Left = 365
-  Top = 158
-  Width = 1057
+  Left = 306
+  Top = 97
+  Width = 537
   Height = 759
   Caption = 'Loteria'
   Color = clBtnFace
@@ -20,6 +20,7 @@ object Loteria: TLoteria
     Width = 75
     Height = 25
     Caption = 'Baixar'
+    Enabled = False
     TabOrder = 0
     OnClick = btBaixarClick
   end
@@ -29,17 +30,9 @@ object Loteria: TLoteria
     Width = 75
     Height = 25
     Caption = 'Descompactar'
+    Enabled = False
     TabOrder = 1
     OnClick = btDescompactarClick
-  end
-  object btGerar: TButton
-    Left = 264
-    Top = 8
-    Width = 75
-    Height = 25
-    Caption = 'Gerar html'
-    TabOrder = 2
-    OnClick = btGerarClick
   end
   object mmLog: TRichEdit
     Left = 8
@@ -49,29 +42,16 @@ object Loteria: TLoteria
     HideScrollBars = False
     PlainText = True
     ScrollBars = ssBoth
-    TabOrder = 3
+    TabOrder = 2
     WordWrap = False
   end
-  object cbLocal: TCheckBox
-    Left = 16
+  object btnGerar: TButton
+    Left = 264
     Top = 8
-    Width = 97
-    Height = 17
-    Caption = 'home'
-    Checked = True
-    State = cbChecked
-    TabOrder = 4
-    OnClick = cbLocalClick
-  end
-  object mmx: TRichEdit
-    Left = 528
-    Top = 40
-    Width = 505
-    Height = 673
-    HideScrollBars = False
-    PlainText = True
-    ScrollBars = ssBoth
-    TabOrder = 5
-    WordWrap = False
+    Width = 75
+    Height = 25
+    Caption = 'Gerar htm'
+    TabOrder = 3
+    OnClick = btnGerarClick
   end
 end
