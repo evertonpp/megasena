@@ -17,9 +17,8 @@ type
     procedure btDescompactarClick(Sender: TObject);
     procedure btnGerarClick(Sender: TObject);
   private
-    function TemArquivo(pFile: string): boolean;
     procedure Log(pLinha: string; pCor: string = '');
-    procedure GerarTmpMain;
+    procedure GerarMSSpawnMain;
   public
     { Public declarations }
   end;
@@ -50,36 +49,17 @@ begin
 end;
 
 //==================================================================================================
-function TLoteria.TemArquivo(pFile: string): boolean;
-var
-  achou: Boolean;
-begin
-  achou := false;
-  if FileExists('E:\Softwares\loteria\megasena\etc\d_megasc.htm') then
-  begin
-    strLocal := 'E:\Softwares\loteria\megasena\etc\';
-    achou := true;
-  end;
-  if FileExists('C:\Users\evertonpp\Documents\GitHub\megasena\etc\d_megasc.htm') then
-  begin
-    strLocal := 'C:\Users\evertonpp\Documents\GitHub\megasena\etc\';
-    achou := true;
-  end;
-  if not achou then
-  begin
-    log('Diretório raiz não encontrado em:');
-    log('  E:\Softwares\loteria\megasena\etc\');
-    log('  C:\Users\evertonpp\Documents\GitHub\megasena\etc\');
-  end;
-  Result := achou;
-end;
-
-//==================================================================================================
 procedure TLoteria.btBaixarClick(Sender: TObject);
 begin
+  if FileExists(strLocal + 'D_mgsasc.zip') then
+  begin
+    DeleteFile(strLocal + 'D_mgsasc.zip');
+    log('D_mgsasc.zip anterior deletado.', 'clBlue');
+  end;
+
   with TDownloadURL.Create(self) do
     try
-      log('Iniciando download de http://www1.caixa.gov.br/loterias/_arquivos/loterias/D_mgsasc.zip', 'clBlue');
+      log('Iniciando download de http://www1.caixa.gov.br/loterias/_arquivos/loterias/D_mgsasc.zip');
       FileName  := strLocal + 'D_mgsasc.zip';
       URL := 'http://www1.caixa.gov.br/loterias/_arquivos/loterias/D_mgsasc.zip';
       ExecuteTarget(nil) ;
@@ -95,22 +75,29 @@ begin
   //http://www.edudelphipage.com.br/dicas_titulos.php?categoria=2
   if FileExists('C:\Program Files (x86)\WinRAR\WinRAR.exe') then
   begin
+    SetCurrentDir(strLocal);
+    if FileExists('d_megasc.htm') then
+    begin
+      DeleteFile('d_megasc.htm');
+      log('d_megasc.htm anterior deletado.', 'clBlue');
+    end;
     log('Descompactando D_mgsasc.zip');
-    winexec(PChar('C:\Program Files (x86)\WinRAR\WinRAR.exe e *.zip *htm'),sw_normal);
+    winexec(PChar('C:\Program Files (x86)\WinRAR\WinRAR.exe e *.zip *.htm'),sw_normal);
+    log('D_mgsasc.zip descompactado', 'clGreen');
   end
   else
     log('Winrar não encontrado em C:\Program Files (x86)\WinRAR\WinRAR.exe', 'clRed');
 end;        
 
 //==================================================================================================
-procedure TLoteria.GerarTmpMain;
+procedure TLoteria.GerarMSSpawnMain;
 var
   arqLst: TStringList;
   arqIn: TextFile;
   tupla: integer;
   linha: String;
 begin
-  log('Início GerarTmpMain');
+  log('Início GerarMSSpawnMain');
   arqLst := TStringList.Create;
   tupla := 0;
   AssignFile(arqIn, strLocal + 'd_megasc.htm');
@@ -137,10 +124,9 @@ begin
     end;
   end;
   CloseFile(arqIn);
-  arqLst.SaveToFile(strLocal + 'tmpMain.htm');
-  //mmLog.Lines.LoadFromFile(strLocal + 'tmpMain.htm');
+  arqLst.SaveToFile(strLocal + 'msSpawnMain.htm');
   FreeAndNil(arqLst);
-  log('Fim GerarTmpMain');
+  log('Fim GerarMSSpawnMain');
 end;
 
 //==================================================================================================
@@ -148,17 +134,17 @@ procedure TLoteria.btnGerarClick(Sender: TObject);
 var
   arqTop, arqMain: TStringList;
 begin
-  GerarTmpMain;
-  log('Início gerarTop');
+  GerarMSSpawnMain;
+  log('Início GerarMSSpawn');
   arqTop := TStringList.Create;
   arqMain := TStringList.Create;
-  arqTop.LoadFromFile(strLocal + 'tmpTop.htm');
-  arqMain.LoadFromFile(strLocal + 'tmpMain.htm');
+  arqTop.LoadFromFile(strLocal + 'msSpawnTop.htm');
+  arqMain.LoadFromFile(strLocal + 'msSpawnMain.htm');
   arqTop.AddStrings(arqMain);
-  arqTop.SaveToFile(strLocal + 'top.htm');
+  arqTop.SaveToFile(strLocal + 'msSpawn.htm');
   FreeAndNil(arqTop);
   FreeAndNil(arqMain);
-  log('Fim gerarTop'); 
+  log('Fim GerarMSSpawn');
 end;
 
 

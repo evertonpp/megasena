@@ -20,7 +20,6 @@ object Loteria: TLoteria
     Width = 75
     Height = 25
     Caption = 'Baixar'
-    Enabled = False
     TabOrder = 0
     OnClick = btBaixarClick
   end
@@ -30,7 +29,6 @@ object Loteria: TLoteria
     Width = 75
     Height = 25
     Caption = 'Descompactar'
-    Enabled = False
     TabOrder = 1
     OnClick = btDescompactarClick
   end
